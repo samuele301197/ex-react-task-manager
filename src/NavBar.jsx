@@ -4,7 +4,7 @@ export default function NavBar() {
   return (
     <nav>
       <NavLink to="/add">Add Tasks</NavLink>
-      <NavLink to="/list">Tasks List</NavLink>
+      <NavLink to="/tasks">Tasks List</NavLink>
     </nav>
   );
 }

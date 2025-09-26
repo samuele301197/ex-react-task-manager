@@ -3,7 +3,7 @@ import { memo } from "react";
 function TaskRow({ task }) {
   let style = {};
 
-  if (task.status === "ToDo") {
+  if (task.status === "To do") {
     style = { backgroundColor: "red", color: "white" };
   } else if (task.status === "Doing") {
     style = { backgroundColor: "yellow", color: "black" };
