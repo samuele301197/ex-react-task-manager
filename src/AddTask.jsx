@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
+import { GlobalContext } from "./context/GlobalContext";
 
 export default function AddTask() {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
-  const textRef = useRef();
+  const descriptionRef = useRef();
   const statusRef = useRef();
+
+  const { addTask } = useContext(GlobalContext);
 
   const symbols = `!@#$%^&*()-_=+[]{}|;:'\\",.><?/~`;
 
@@ -24,8 +27,9 @@ export default function AddTask() {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (error) return;
 
     const newTask = {
       title: title,
@@ -33,7 +37,17 @@ export default function AddTask() {
       status: statusRef.current.value,
     };
 
-    console.log(newTask);
+    try {
+      const createTask = await addTask(newTask);
+      if (createTask) {
+        alert("Task creata con successo!");
+        setTitle("");
+        descriptionRef.current.value = "";
+        statusRef.current.value = "To do";
+      }
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
@@ -41,15 +55,19 @@ export default function AddTask() {
       <h2>Aggiungi Task</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Nome Task</label>
-          <input type="text" value={title} onChange={handleChange} />
+          <input
+            type="text"
+            value={title}
+            onChange={handleChange}
+            placeholder="Nome Task"
+          />
           {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
         <div>
           <textarea
             type="text"
-            ref={textRef}
-            placeholder="Scrivi la descrizione"
+            ref={descriptionRef}
+            placeholder="Scrivi la descrizione della task..."
           ></textarea>
         </div>
         <div>
