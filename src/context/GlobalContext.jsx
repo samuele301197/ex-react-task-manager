@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 
-const GlobalContext = createContext();
+export const GlobalContext = createContext();
 
 export default function GlobalProvider({ children }) {
   const [tasks, setTasks] = useState([]);

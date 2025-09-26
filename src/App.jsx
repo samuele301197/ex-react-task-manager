@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import TaskList from "./TaskList";
 import AddTask from "./AddTask";
 import NavBar from "./NavBar";
-import GlobalProvider from "./context/GlobalContext.jsx";
+import GlobalProvider from "./context/GlobalContext";
 
 function App() {
   return (
