@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 
 function TaskRow({ task }) {
   let style = {};
@@ -13,9 +14,11 @@ function TaskRow({ task }) {
 
   return (
     <tr>
-      <td>{task.title}</td>
+      <td>
+        <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+      </td>
       <td style={style}>{task.status}</td>
-      <td>{new Date(task.created_at).toLocaleDateString("it-IT")}</td>
+      <td>{new Date(task.createdAt).toLocaleDateString("it-IT")}</td>
     </tr>
   );
 }
