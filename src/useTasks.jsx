@@ -40,7 +40,25 @@ export default function useTasks() {
       return null;
     }
   };
-  const removeTask = (taskId) => {};
+  const removeTask = async (taskId) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/tasks/${taskId}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) throw new Error("Errore nella chiamata DELETE");
+      const data = await res.json();
+      if (data.success) {
+        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
   const updateTask = (taskId, taskUpdate) => {};
 
   return { tasks, setTasks, error, addTask, removeTask, updateTask };

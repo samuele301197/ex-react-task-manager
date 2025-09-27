@@ -14,7 +14,7 @@ function App() {
           <Route path="/add" element={<AddTask />} />
           <Route path="/tasks" element={<TaskList />} />
           <Route path="/tasks/:id" element={<TaskDetail />} />
-          <Route path="*" element={<h1>Pagina non trovata</h1>} />
+          <Route path="*" element={<h1>La mia Task Page</h1>} />
         </Routes>
       </GlobalProvider>
     </BrowserRouter>
