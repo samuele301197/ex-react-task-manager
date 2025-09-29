@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GlobalContext } from "./context/GlobalContext";
+import Modal from "./Modal";
 
 export default function TaskDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { tasks, removeTask } = useContext(GlobalContext);
+  const [showModal, setShowModal] = useState(false);
 
   const task = tasks.find((t) => t.id.toString() === id);
 
@@ -34,9 +36,17 @@ export default function TaskDetail() {
         <strong>Creata il:</strong>
         {new Date(task.createdAt).toLocaleDateString("it-IT")}
       </p>
-      <button type="button" onClick={handleDelete}>
+      <button type="button" onClick={() => setShowModal(true)}>
         Elimina Task
       </button>
+      <Modal
+        title="Conferma Eliminazione"
+        content={<p>Sei sicuro di voler eliminare questa task?</p>}
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleDelete}
+        confirmText="Elimina"
+      />
     </div>
   );
 }
