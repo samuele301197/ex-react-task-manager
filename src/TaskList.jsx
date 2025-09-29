@@ -1,11 +1,12 @@
-import { useContext, useState, useMemo } from "react";
+import { useContext, useState, useMemo, useCallback } from "react";
 import { GlobalContext } from "./context/GlobalContext";
 import TaskRow from "./TasksRow.jsx";
 
 export default function TaskList() {
   const { tasks, error } = useContext(GlobalContext);
-  const [sortBy, setSortBy] = useState("CreatedAt");
+  const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   if (error) {
     return <h3>Errore: {error.message}</h3>;
@@ -20,28 +21,52 @@ export default function TaskList() {
     }
   };
 
+  const debounce = useCallback((fn, delay = 300) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  }, []);
+
+  const handleSearchDebounced = useCallback(
+    debounce((value) => {
+      setSearchQuery(value);
+    }, 300),
+    [debounce]
+  );
+
   const sortedTasks = useMemo(() => {
     const statusOrder = { "To do": 0, Doing: 1, Done: 2 };
 
-    return [...tasks].sort((a, b) => {
-      let comparison = 0;
+    return [...tasks]
+      .filter((task) =>
+        task.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => {
+        let comparison = 0;
 
-      if (sortBy === "title") {
-        comparison = a.title.localeCompare(b.title);
-      } else if (sortBy === "status") {
-        comparison = statusOrder[a.status] - statusOrder[b.status];
-      } else if (sortBy === "createdAt") {
-        comparison =
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      }
+        if (sortBy === "title") {
+          comparison = a.title.localeCompare(b.title);
+        } else if (sortBy === "status") {
+          comparison = statusOrder[a.status] - statusOrder[b.status];
+        } else if (sortBy === "createdAt") {
+          comparison =
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
 
-      return comparison * sortOrder;
-    });
-  }, [tasks, sortBy, sortOrder]);
+        return comparison * sortOrder;
+      });
+  }, [tasks, sortBy, sortOrder, searchQuery]);
 
   return (
     <>
       <h2>Lista dei Tasks</h2>
+      <input
+        type="text"
+        placeholder="Cerca..."
+        onChange={(e) => handleSearchDebounced(e.target.value)}
+      />
       <table>
         <thead>
           <tr>
